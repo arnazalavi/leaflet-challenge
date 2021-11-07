@@ -1,4 +1,4 @@
-// var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
+ var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
 
 // var myMap;
 // var geoLayer
@@ -65,17 +65,35 @@
 // }
 
 // Store our API endpoint as queryUrl
-var queryUrl = "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=" +
-  "2014-01-02&maxlongitude=-69.52148437&minlongitude=-123.83789062&maxlatitude=48.74894534&minlatitude=25.16517337";
+//var queryUrl = "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=" +
+  //"2014-01-02&maxlongitude=-69.52148437&minlongitude=-123.83789062&maxlatitude=48.74894534&minlatitude=25.16517337";
 
-  function getColor(depth) {
-      if (depth > 20 ) {
-          return "red"
-      }
-     else { 
-         return "green"
+  //function getColor(depth) {
+    //  if (depth > 20 ) {
+    //      return "red"
+  //    }
+ //    else { 
+    //     return "green"
+  //   }
+ // }
+
+function getColor(depth) {
+    if (depth < 10 ) {
+        return "red"
      }
+    else if (depth < 20 ) { 
+      return "green"
+    }
+    else if (depth < 30 ) { 
+      return "yellow"
+    }
+    else if (depth < 40 ) { 
+      return "lightBlue"
+    }
+    else { 
+        return "orange"
   }
+}
 // Perform a GET request to the query URL
 d3.json(queryUrl).then(function(data) {
   console.log(data.features);
@@ -84,7 +102,7 @@ d3.json(queryUrl).then(function(data) {
     {
       onEachFeature: function(feature, layer) {
         layer.bindPopup(
-          `<h2>${feature.properties.place}</h2><hr>Magnitude: ${feature.properties.mag}`
+          `<h2>Place :${feature.properties.place}<hr>Magnitude: ${feature.properties.mag} <hr>Date: ${feature.properties.time}</h2>`
         );
       },
       pointToLayer:function(feature,latlon){
@@ -143,4 +161,57 @@ d3.json(queryUrl).then(function(data) {
     collapsed: false
   }).addTo(myMap);
 
+  // Set up the legend
+var legend = L.control({ position: "bottomright" });
+  legend.onAdd = function() {
+  var div = L.DomUtil.create("div", "info legend");
+
+//var depth = [9,30,49,69,89,400]
+var colors = ['red','green','yellow','lightBlue','orange','gold']
+ var display = ['-10-10','10-30','30-50' ,'50-70', '70-90' ,'90+'  ];
+var labels = [];
+
+  var legendInfo = "<h1>Depth</h1>" 
+   div.innerHTML = legendInfo;
+   
+
+  colors.forEach(function(color, index) {
+   labels.push("<li style=\" list-style-type: none; padding : 5px 10px ;background-color: " + colors[index] + "\">"+ display[index]+"</li>");
+   }); 
+
+   div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+  return div;
+ };
+
+// // Adding legend to the map
+ legend.addTo(myMap);
+
 });
+
+// Set up the legend
+// var legend = L.control({ position: "bottomright" });
+// legend.onAdd = function() {
+//   var div = L.DomUtil.create("div", "info legend");
+//   //fillColor:getColor(feature.properties.primary_type),
+//   var depth = [9,30,49,69,89,400]
+//   var labels = ['-10-10','10-30','30-50' ,'50-70', '70-90' ,'90+'  ];
+// var labels = [];
+//   // Add min & max
+//   var legendInfo = "<h1>Crime Type</h1>" 
+//   // "<div class=\"labels\">" +
+//     //  "<div class=\"min\">" + limits[0] + "</div>" +
+//     //  "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
+//   // "</div>";
+
+//   div.innerHTML = legendInfo;
+
+//   colors.forEach(function(color, index) {
+//     labels.push("<li style=\"background-color: " + colors[index] + "\">"+ labels[index]+"</li>");
+//   });
+
+//   div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+//   return div;
+// };
+
+// // Adding legend to the map
+// legend.addTo(myMap);
