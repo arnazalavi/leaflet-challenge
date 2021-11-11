@@ -7,7 +7,7 @@ __pycache__/
 *.so
 #DS_Store
 .DS_Store
-config.js
+
 # Distribution / packaging
 .Python
 build/
